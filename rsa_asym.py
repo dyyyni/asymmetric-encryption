@@ -2,7 +2,18 @@ from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.backends import default_backend #Binds the openSSL to the program
 import base64
+import time
 
+def timer_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Elapsed time for {func.__name__}: {end_time - start_time} seconds.")
+        return result
+    return wrapper
+
+@timer_decorator
 def encrypt(public_key, plaintext):
     ciphertext = public_key.encrypt(
             plaintext,
@@ -15,6 +26,7 @@ def encrypt(public_key, plaintext):
 
     return ciphertext
 
+@timer_decorator
 def decrypt(private_key, ciphertext):
     decrypted_message = private_key.decrypt(
             ciphertext,
